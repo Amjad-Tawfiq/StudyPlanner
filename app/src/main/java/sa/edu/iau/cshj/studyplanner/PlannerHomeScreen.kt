@@ -18,13 +18,15 @@ import androidx.compose.runtime.remember
 
 data class PlannerUiState(
     val greeting: String = "Hello, Amjad",
-    val totalTasks: Int = 7,
-    val completedTasks: Int = 3
+    val totalTasks: Int = 3,
+    val completedTasks: Int = 0,
+    val tasks: List<String> = emptyList()
 )
 @Composable
 fun PlannerHomeScreen(
     uiState: PlannerUiState,
     onMarkDone: () -> Unit,
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -36,6 +38,13 @@ fun PlannerHomeScreen(
         Text(uiState.greeting)
 
         Text("${uiState.completedTasks} of ${uiState.totalTasks} done")
+        uiState.tasks.forEach { task ->
+            Button(
+                onClick = { onTaskClick(task) }
+            ) {
+                Text(task)
+            }
+        }
 
         Button(
             onClick = onMarkDone
@@ -55,7 +64,8 @@ private fun PlannerHomeScreenPreview1() {
                 totalTasks = 7,
                 completedTasks = 0
             ),
-            onMarkDone = {}
+            onMarkDone = {},
+            onTaskClick = {}
         )
     }
 }
@@ -70,14 +80,28 @@ private fun PlannerHomeScreenPreview2() {
                 totalTasks = 7,
                 completedTasks = 7
             ),
-            onMarkDone = {}
+            onMarkDone = {},
+            onTaskClick = {}
         )
     }
 }
 @Composable
-fun PlannerHomeRoute() {
+fun PlannerHomeRoute(
+    onTaskClick: (String) -> Unit
+) {
     var uiState by remember {
-        mutableStateOf(PlannerUiState())
+        mutableStateOf(
+            PlannerUiState(
+                greeting = "Hello, Amjad",
+                totalTasks = 3,
+                completedTasks = 0,
+                tasks = listOf(
+                    "Lab 5 Report",
+                    "Study for CSC 402",
+                    "Finish Mobile Assignment"
+                )
+            )
+        )
     }
 
     PlannerHomeScreen(
@@ -88,6 +112,7 @@ fun PlannerHomeRoute() {
                     completedTasks = uiState.completedTasks + 1
                 )
             }
-        }
+        },
+        onTaskClick = onTaskClick
     )
 }
