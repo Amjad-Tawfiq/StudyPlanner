@@ -2,117 +2,139 @@ package sa.edu.iau.cshj.studyplanner
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import sa.edu.iau.cshj.studyplanner.ui.theme.StudyPlannerTheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 data class PlannerUiState(
     val greeting: String = "Hello, Amjad",
-    val totalTasks: Int = 3,
-    val completedTasks: Int = 0,
-    val tasks: List<String> = emptyList()
+    val tasks: List<StudyTask> = emptyList()
 )
+
 @Composable
 fun PlannerHomeScreen(
     uiState: PlannerUiState,
-    onMarkDone: () -> Unit,
-    onTaskClick: (String) -> Unit,
+    onTaskClick: (Int) -> Unit,
+    onDoneChange: (Int, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(24.dp)
     ) {
-        Text(uiState.greeting)
+        Text(text = uiState.greeting)
 
-        Text("${uiState.completedTasks} of ${uiState.totalTasks} done")
-        uiState.tasks.forEach { task ->
-            Button(
-                onClick = { onTaskClick(task) }
-            ) {
-                Text(task)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "${uiState.tasks.count { it.isDone }} of ${uiState.tasks.size} done"
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = uiState.tasks,
+                key = { it.id }
+            ) { task ->
+                TaskItem(
+                    task = task,
+                    onTaskClick = onTaskClick,
+                    onDoneChange = onDoneChange
+                )
             }
         }
-
-        Button(
-            onClick = onMarkDone
-        ) {
-            Text("Mark one task done")
-        }
     }
 }
 
-@Preview(showBackground = true, name = "Nothing done yet")
-@Composable
-private fun PlannerHomeScreenPreview1() {
-    StudyPlannerTheme {
-        PlannerHomeScreen(
-            uiState = PlannerUiState(
-                greeting = "Hello, Amjad",
-                totalTasks = 7,
-                completedTasks = 0
-            ),
-            onMarkDone = {},
-            onTaskClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "All tasks done")
-@Composable
-private fun PlannerHomeScreenPreview2() {
-    StudyPlannerTheme {
-        PlannerHomeScreen(
-            uiState = PlannerUiState(
-                greeting = "Hello, Amjad",
-                totalTasks = 7,
-                completedTasks = 7
-            ),
-            onMarkDone = {},
-            onTaskClick = {}
-        )
-    }
-}
 @Composable
 fun PlannerHomeRoute(
-    onTaskClick: (String) -> Unit
+    onTaskClick: (Int) -> Unit
 ) {
-    var uiState by remember {
-        mutableStateOf(
-            PlannerUiState(
-                greeting = "Hello, Amjad",
-                totalTasks = 3,
-                completedTasks = 0,
-                tasks = listOf(
-                    "Lab 5 Report",
-                    "Study for CSC 402",
-                    "Finish Mobile Assignment"
-                )
-            )
-        )
+    var doneTaskIds by rememberSaveable {
+        mutableStateOf(listOf<Int>())
     }
+
+    val tasks = listOf(
+        StudyTask(
+            id = 1,
+            title = "Lab 7 Report",
+            course = "CSC 402",
+            isDone = 1 in doneTaskIds
+        ),
+        StudyTask(
+            id = 2,
+            title = "Study for Exam",
+            course = "CSC 402",
+            isDone = 2 in doneTaskIds
+        ),
+        StudyTask(
+            id = 3,
+            title = "Finish Assignment",
+            course = "Mobile Application",
+            isDone = 3 in doneTaskIds
+        ),
+        StudyTask(
+            id = 4,
+            title = "Review Lecture",
+            course = "CSC 402",
+            isDone = 4 in doneTaskIds
+        ),
+        StudyTask(
+            id = 5,
+            title = "Prepare Notes",
+            course = "CSC 402",
+            isDone = 5 in doneTaskIds
+        )
+    )
+
+    val uiState = PlannerUiState(
+        tasks = tasks
+    )
 
     PlannerHomeScreen(
         uiState = uiState,
-        onMarkDone = {
-            if (uiState.completedTasks < uiState.totalTasks) {
-                uiState = uiState.copy(
-                    completedTasks = uiState.completedTasks + 1
-                )
-            }
-        },
-        onTaskClick = onTaskClick
+        onTaskClick = onTaskClick,
+        onDoneChange = { id, checked ->
+            doneTaskIds =
+                if (checked) {
+                    doneTaskIds + id
+                } else {
+                    doneTaskIds - id
+                }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PlannerHomeScreenPreview() {
+    PlannerHomeScreen(
+        uiState = PlannerUiState(
+            tasks = listOf(
+                StudyTask(1, "Lab 7 Report", "CSC 402"),
+                StudyTask(2, "Study for Exam", "CSC 402", true),
+                StudyTask(3, "Finish Assignment", "Mobile Application"),
+                StudyTask(4, "Review Lecture", "CSC 402", true),
+                StudyTask(5, "Prepare Notes", "CSC 402")
+            )
+        ),
+        onTaskClick = {},
+        onDoneChange = { _, _ -> }
     )
 }

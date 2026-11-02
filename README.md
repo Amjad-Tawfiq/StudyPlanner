@@ -1,6 +1,12 @@
-# CSC402 Semester App — Part 1
+# CSC402 
+
+# Semester App — Part 1
+
+
 
 ## StudyPlanner
+
+
 
 This project is the first part of the CSC402 Semester App.
 
@@ -15,6 +21,8 @@ This project is the first part of the CSC402 Semester App.
 * State is owned by PlannerHomeRoute
 * Includes two different Compose previews
 
+## 
+
 ## Submission Evidence
 
 The required screenshots are available in:
@@ -25,6 +33,8 @@ docs/Screenshots
 * P1\_5\_Preview\_NothingDone.png
 * P1\_5\_Preview\_AllDone.png
 * P1\_6\_RunningApp\_AfterTap.png
+
+## 
 
 ## Technologies
 
@@ -78,6 +88,64 @@ docs/Screenshots
 \- P2\_DetailPreview1.png
 
 \- P2\_DetailPreview2.png
+
+
+
+## Semester App Part 4
+
+
+
+Features Added
+
+
+
+\* Added a StudyTask data class with task ID, title, course, and completion state
+
+\* Updated PlannerUiState to use a list of StudyTask
+
+\* Computed task progress directly from the task list
+
+\* Added a reusable and stateless TaskItem composable
+
+\* Added a Checkbox to mark tasks as done
+
+\* Displayed tasks using LazyColumn
+
+\* Added stable item keys using task IDs
+
+\* Updated completion state using map and copy
+
+\* Added navigation from a task row to the Task Detail screen
+
+\* Preserved task completion state while navigating back
+
+\* Added three Compose previews
+
+
+
+#### Part 4 Submission Evidence
+
+
+
+The required screenshots are available in:
+
+
+
+docs/Screenshots
+
+
+
+\* P4\_1\_TaskRowSketch.png
+
+\* P4\_TaskItem\_NotDone\_Preview.png
+
+\* P4\_TaskItem\_Done\_Preview.png
+
+\* P4\_HomeScreen\_Preview.png
+
+\* P4\_RunningList\_2Done.png
+
+\* P4\_TaskDetailScreen.png
 
 
 
@@ -143,7 +211,7 @@ Date: 26/10/2026
 
 AI Tool: ChatGPT
 
-
+###### 
 
 ###### How AI was used:
 

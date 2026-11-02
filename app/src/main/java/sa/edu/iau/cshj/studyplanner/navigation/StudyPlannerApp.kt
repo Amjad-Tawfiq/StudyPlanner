@@ -7,9 +7,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import sa.edu.iau.cshj.studyplanner.PlannerHomeRoute
 import sa.edu.iau.cshj.studyplanner.TaskDetailRoute
-import sa.edu.iau.cshj.studyplanner.StudyPlannerRoute
-
-
 
 @Composable
 fun StudyPlannerApp() {
@@ -20,14 +17,27 @@ fun StudyPlannerApp() {
         startDestination = PlannerHome
     ) {
         composable<PlannerHome> {
-            StudyPlannerRoute()
+            PlannerHomeRoute(
+                onTaskClick = { id ->
+                    navController.navigate(TaskDetail(id))
+                }
+            )
         }
 
         composable<TaskDetail> { backStackEntry ->
             val detail: TaskDetail = backStackEntry.toRoute()
 
+            val title = when (detail.id) {
+                1 -> "Lab 7 Report"
+                2 -> "Study for Exam"
+                3 -> "Finish Assignment"
+                4 -> "Review Lecture"
+                5 -> "Prepare Notes"
+                else -> "Study Task"
+            }
+
             TaskDetailRoute(
-                title = detail.title,
+                title = title,
                 onBackClick = {
                     navController.popBackStack()
                 }

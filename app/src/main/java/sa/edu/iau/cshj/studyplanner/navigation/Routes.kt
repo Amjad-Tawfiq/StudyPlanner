@@ -7,5 +7,5 @@ object PlannerHome
 
 @Serializable
 data class TaskDetail(
-    val title: String
+    val id: Int
 )
